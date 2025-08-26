@@ -1,0 +1,255 @@
+# AI Coding Agent Configuration
+# This is a sample configuration file showing all available options
+# Copy this to ~/.ai_coding_agent/config.yaml and customize as needed
+
+# LLM Configuration
+llm:
+  # Primary provider to use (openai, anthropic, local)
+  provider: "openai"
+  
+  # Model name for the primary provider
+  model: "gpt-4"
+  
+  # API base URL (for local/custom endpoints)
+  base_url: null
+  
+  # Maximum tokens in context window
+  max_tokens: 4000
+  
+  # Temperature for response generation (0.0-1.0)
+  temperature: 0.1
+  
+  # Enable streaming responses
+  streaming: true
+  
+  # Fallback providers (tried in order if primary fails)
+  fallback_providers:
+    - "anthropic"
+    - "local"
+
+# Agent Safety Configuration
+safety:
+  # Require approval for destructive operations
+  require_approval: true
+  
+  # Auto-approve patterns (regex patterns for operations that don't need approval)
+  auto_approve:
+    - "^read.*"           # Reading files
+    - "^list.*"           # Listing directories
+    - "^git status$"      # Git status checks
+    - "^git diff.*"       # Git diffs (read-only)
+    - "^lint.*"           # Code linting
+    - "^test.*--dry-run$" # Test runs in dry-run mode
+  
+  # Auto-deny patterns (operations that are never allowed)
+  auto_deny:
+    - "^rm -rf /$"        # Never delete root
+    - "^sudo rm.*"        # No sudo deletions
+    - "^git push.*--force$" # No force pushes
+    - "^shutdown.*"       # No system shutdowns
+  
+  # Maximum file size for operations (in MB)
+  max_file_size: 10
+  
+  # Backup files before destructive operations
+  backup_on_write: true
+  
+  # Directories to exclude from operations
+  excluded_paths:
+    - "node_modules"
+    - ".git"
+    - "__pycache__"
+    - "*.log"
+    - ".env"
+    - ".env.local"
+
+# Memory Configuration
+memory:
+  # Maximum entries in session memory
+  max_session_entries: 1000
+  
+  # Maximum entries in persistent memory
+  max_persistent_entries: 10000
+  
+  # Days to keep entries before cleanup
+  retention_days: 30
+  
+  # Enable learning from interactions
+  enable_learning: true
+  
+  # Automatically persist important memories
+  auto_persist: true
+  
+  # Memory cleanup interval (minutes)
+  cleanup_interval: 60
+
+# Interface Configuration
+interface:
+  # Use rich terminal formatting
+  use_rich: true
+  
+  # Show detailed tool execution information
+  verbose: false
+  
+  # Show thinking/reasoning process
+  show_thinking: false
+  
+  # Color scheme (dark, light, auto)
+  color_scheme: "auto"
+  
+  # Default editor for multi-line input
+  editor: "nano"
+  
+  # Auto-suggest commands based on history
+  auto_suggest: true
+  
+  # Save command history
+  save_history: true
+  
+  # Maximum history entries
+  max_history: 1000
+
+# Tool Configuration
+tools:
+  # Filesystem tool settings
+  filesystem:
+    enabled: true
+    # Default encoding for text files
+    default_encoding: "utf-8"
+    # Create backups before modifications
+    backup_enabled: true
+    # Backup directory
+    backup_dir: "~/.ai_coding_agent/backups"
+    # Maximum directory depth for searches
+    max_search_depth: 10
+    
+  # Git tool settings
+  git:
+    enabled: true
+    # Default commit message template
+    commit_template: |
+      {type}: {description}
+      
+      {details}
+      
+      {metadata}
+    # Auto-detect git hooks
+    respect_hooks: true
+    # Maximum commits to show in log
+    max_log_entries: 50
+    
+  # Code analysis tool settings
+  code:
+    enabled: true
+    # Linters to use by language
+    linters:
+      python: ["flake8", "pylint", "black"]
+      javascript: ["eslint", "prettier"]
+      typescript: ["eslint", "@typescript-eslint"]
+      go: ["golint", "gofmt"]
+      rust: ["clippy", "rustfmt"]
+    # Maximum complexity score allowed
+    max_complexity: 10
+    # Include security checks
+    security_checks: true
+    
+  # Execution tool settings
+  execution:
+    enabled: true
+    # Timeout for command execution (seconds)
+    timeout: 300
+    # Working directory for commands (null for current)
+    working_dir: null
+    # Environment variables to set
+    env_vars: {}
+    # Commands that require approval
+    restricted_commands:
+      - "rm"
+      - "sudo"
+      - "chmod"
+      - "chown"
+      - "dd"
+      - "mkfs"
+
+# Project-specific settings (can be overridden per project)
+project:
+  # Default programming language for new files
+  default_language: "python"
+  
+  # Project type detection patterns
+  type_patterns:
+    python: ["requirements.txt", "pyproject.toml", "setup.py"]
+    node: ["package.json", "yarn.lock", "npm-shrinkwrap.json"]
+    rust: ["Cargo.toml", "Cargo.lock"]
+    go: ["go.mod", "go.sum"]
+    java: ["pom.xml", "build.gradle"]
+    
+  # Code style preferences
+  style:
+    # Indentation (spaces or tabs)
+    indentation: "spaces"
+    # Number of spaces for indentation
+    indent_size: 4
+    # Maximum line length
+    max_line_length: 88
+    # Use trailing commas
+    trailing_commas: true
+    # Quote style (single, double, auto)
+    quote_style: "double"
+
+# Logging Configuration
+logging:
+  # Log level (DEBUG, INFO, WARNING, ERROR)
+  level: "INFO"
+  
+  # Log file location
+  file: "~/.ai_coding_agent/agent.log"
+  
+  # Rotate log files
+  rotate: true
+  
+  # Maximum log file size (MB)
+  max_size: 10
+  
+  # Number of backup files to keep
+  backup_count: 5
+  
+  # Log format
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  
+  # Include user inputs in logs (be careful with sensitive data)
+  log_user_input: false
+
+# Advanced Configuration
+advanced:
+  # Enable experimental features
+  experimental: false
+  
+  # Custom prompt templates
+  prompts:
+    system: null  # Path to custom system prompt file
+    user: null    # Path to custom user prompt template
+    
+  # Plugin directories
+  plugin_dirs:
+    - "~/.ai_coding_agent/plugins"
+    
+  # Performance settings
+  performance:
+    # Enable caching of LLM responses
+    cache_responses: true
+    # Cache directory
+    cache_dir: "~/.ai_coding_agent/cache"
+    # Cache TTL (hours)
+    cache_ttl: 24
+    # Maximum cache size (MB)
+    max_cache_size: 100
+    
+  # Telemetry and analytics
+  telemetry:
+    # Enable anonymous usage analytics
+    enabled: false
+    # Endpoint for telemetry data
+    endpoint: null
+    # Include performance metrics
+    include_performance: true
